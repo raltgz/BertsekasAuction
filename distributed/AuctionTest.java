@@ -1,10 +1,9 @@
 package distributed;
 
-import java.util.Random;
-
+import distributed.Person.retStatus;
 import org.junit.Test;
 
-import distributed.Person.retStatus;
+import java.util.Random;
 
 /**
  * This is a subset of entire test cases For your reference only.
@@ -14,6 +13,8 @@ public class AuctionTest {
 	
 	private Person[] persons;
 	private Item[] items;
+	int N1;
+	int N2;
 	private retStatus isDecided(Person[] pxa, int personIndex) {
 		return pxa[personIndex].Status();
 	}
@@ -98,24 +99,24 @@ public class AuctionTest {
 	@Test
 	public void TestBasic() {
 		Random rand = new Random();
-		final int N1 = 5;
-		final int N2 = 5;
+		N1 = 5;
+		N2 = 5;
 		final double eps = 1.0 / (2 * N1);
 //		final double eps = 0.0;
 		int n_set = N1;
 		int[] l_set = new int[N1];
 		double[][] weight = {
-				{5, 1, 1, 1, 1},
-				{1, 5, 1, 1, 1},
-				{1, 1, 5, 1, 1},
-				{1, 1, 1, 5, 1},
-				{1, 1, 1, 1, 5}
+				{10, 1, 1, 1, 1},
+				{10, 1, 1, 7, 1},
+				{10, 1, 5, 1, 1},
+				{10, 1, 5, 1, 1},
+				{10, 1, 1, 1, 1}
 		};
-		for (int i = 0; i < N1; i++) {
-			for (int j = 0; j < N2; j++) {
-				weight[i][j] = rand.nextDouble() * 5.0;
-			}
-		}
+//		for (int i = 0; i < N1; i++) {
+//			for (int j = 0; j < N2; j++) {
+//				weight[i][j] = rand.nextDouble() * 5.0;
+//			}
+//		}
 		double[] price = new double[N2];
 		int[] parent = new int[N2];
 
@@ -136,6 +137,15 @@ public class AuctionTest {
 			persons[i].Start();
 		}
 		while(true) {
+
+			if(isTerminated()){
+				System.out.println("\n\nTerminated");
+				for(int i=0; i<N2; i++) {
+					Item.retStatus ret = items[i].Status();
+					System.out.println(ret.personIdx +": " + ret.price);
+				}
+				break;
+			}
 			try {
 				Thread.sleep(30);
 			} catch (InterruptedException e) {
@@ -170,6 +180,20 @@ public class AuctionTest {
 //			System.out.println(i + ": " + price[i]);
 //		}
 
+	}
+
+	private boolean isTerminated() {
+		for(int i=0;i < N1; i++) {
+			if(persons[i].Status().state == State.Pending) {
+				return false;
+			}
+		}
+		for(int i=0;i < N2; i++) {
+			if(items[i].Status().state == State.Pending) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

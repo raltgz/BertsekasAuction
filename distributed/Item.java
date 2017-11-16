@@ -18,9 +18,9 @@ public class Item implements Runnable, ItemRMI {
 	int me; // index into peers[]
 
 	Registry registry;
-	private double price;
 	private int N1;
 	ItemRMI stub;
+	retStatus ret;
 
 	// Your data here
 
@@ -37,7 +37,6 @@ public class Item implements Runnable, ItemRMI {
 		this.personPeers = personPeers;
 		this.personPorts = personPorts;
 		this.mutex = new ReentrantLock();
-		this.price = 0.0;
 		this.N1 = nPersons;
 		try {
 			System.setProperty("java.rmi.server.hostname", this.itemPeers[this.me]);
@@ -79,18 +78,21 @@ public class Item implements Runnable, ItemRMI {
 
 	public void Start() {
 		Thread mythread = new Thread(this);
+		this.ret = new retStatus(State.Pending, -1, 0.0);
 		mythread.start();
 	}
 
 	public Response Bid(Request req) {
 		this.mutex.lock();
-		if (req.price > this.price) {
-			this.price = req.price;
+		if (req.price > this.ret.price) {
+			this.ret.price = req.price;
 			for (int i = 0; i < N1; i++) {
 				if (i != req.id) {
-					Call("Update", new Request(this.me, this.price), i);
+					Call("Update", new Request(this.me, this.ret.price), i);
 				}
 			}
+			this.ret.personIdx = req.id;
+			this.ret.state = State.Decided;
 			this.mutex.unlock();
 			return new Response(true);
 		} else {
@@ -104,6 +106,22 @@ public class Item implements Runnable, ItemRMI {
 		while (true) {
 
 		}
+	}
+
+	public class retStatus {
+		public State state;
+		public int personIdx;
+		public double price;
+
+		public retStatus(State state, int personIdx, double price) {
+			this.state = state;
+			this.personIdx = personIdx;
+			this.price = price;
+		}
+	}
+
+	public retStatus Status() {
+		return ret;
 	}
 
 }
