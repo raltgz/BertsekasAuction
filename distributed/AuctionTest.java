@@ -99,8 +99,8 @@ public class AuctionTest {
 	@Test
 	public void TestBasic() {
 		Random rand = new Random();
-		N1 = 5;
-		N2 = 5;
+		N1 = 4;
+		N2 = 3;
 		final double eps = 1.0 / (2 * N1);
 //		final double eps = 0.0;
 		int n_set = N1;
@@ -109,8 +109,7 @@ public class AuctionTest {
 				{10, 1, 1, 1, 1},
 				{10, 1, 1, 7, 1},
 				{10, 1, 5, 1, 1},
-				{10, 1, 5, 1, 1},
-				{10, 1, 1, 1, 1}
+				{10, 5, 1, 1, 1},
 		};
 //		for (int i = 0; i < N1; i++) {
 //			for (int j = 0; j < N2; j++) {
@@ -188,10 +187,14 @@ public class AuctionTest {
 				return false;
 			}
 		}
+		int numPending = 0;
 		for(int i=0;i < N2; i++) {
 			if(items[i].Status().state == State.Pending) {
-				return false;
+				numPending++;
 			}
+		}
+		if(Math.min(N1,N2) + numPending != N2) {
+			return false;
 		}
 		return true;
 	}
