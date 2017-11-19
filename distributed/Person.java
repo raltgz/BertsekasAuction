@@ -17,6 +17,7 @@ public class Person implements Runnable, PersonRMI {
 	int[] personPorts; // host port
 	int me; // index into peers[]
 	int assignedId; // object assigned to the person
+    int controller_id;
 
 	Registry registry;
 	private int N2;
@@ -49,6 +50,8 @@ public class Person implements Runnable, PersonRMI {
 		this.eps = eps;
 		this.prices = prices;
 		this.assignedId = -1;
+		this.controller_id = 1300;
+
 		// register peers, do not modify this part
 		try {
 			System.setProperty("java.rmi.server.hostname", this.personPeers[this.me]);
@@ -73,14 +76,21 @@ public class Person implements Runnable, PersonRMI {
 	 */
 	public Response Call(String rmi, Request req, int id) {
 		Response callReply = null;
-		ItemRMI stub;
 		try {
-			Registry registry = LocateRegistry.getRegistry(this.itemPorts[id]);
-			stub = (ItemRMI) registry.lookup("Item");
+
+
+
 			if (rmi.equals("Bid")) {
+                Registry registry = LocateRegistry.getRegistry(this.itemPorts[id]);
+				ItemRMI stub = (ItemRMI) registry.lookup("Item");
 				callReply = stub.Bid(req);
-			} else
-				System.out.println("Wrong parameters!");
+			} else if (rmi.equals("Report")) {
+                Registry registry = LocateRegistry.getRegistry(controller_id);
+				ControllerRMI stub = (ControllerRMI) registry.lookup("Controller");
+				callReply = stub.Report(req);
+			} else {
+                System.out.println("Wrong parameters!");
+            }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -124,7 +134,6 @@ public class Person implements Runnable, PersonRMI {
 				}
 			}
 		}
-		System.out.println(this.me + " terminated!");
 	}
 
 	void bid() {
@@ -138,6 +147,7 @@ public class Person implements Runnable, PersonRMI {
 		}
 		if (max == 0.0) {
 			ret.state = State.Terminated;
+            Call("Report", new Request(this.me, -1, -1), controller_id);
 		} else {
 			double max2 = 0.0;
 			for (int i = 0; i < N2; i++) {
@@ -152,6 +162,7 @@ public class Person implements Runnable, PersonRMI {
 				ret.price = price;
 				this.assignedId = maxIndex;
 				System.out.println("person id:" + this.me + ", object id: " + this.assignedId + ", price: " + price);
+				Call("Report", new Request(this.me, maxIndex, price), controller_id);
 			} 
 			
 			// ret.price = prices[maxIndex] + max - max2 + eps;
@@ -193,6 +204,17 @@ public class Person implements Runnable, PersonRMI {
 			this.assignedId = -1;
 		}
 		this.mutex.unlock();
+	}
+
+	public void Kill(){
+		this.ret.state = State.Terminated;
+		if(this.registry != null){
+			try {
+				UnicastRemoteObject.unexportObject(this.registry, true);
+			} catch(Exception e){
+				System.out.println("None reference");
+			}
+		}
 	}
 
 }

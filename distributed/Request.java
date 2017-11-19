@@ -13,9 +13,17 @@ public class Request implements Serializable {
     public double price;
 
 	public int id;
+	public int item_id;
 	public Request(int id, double price) {
 		super();
 		this.id = id;
 		this.price = price;
 	}
+	public Request(int id, int item_id, double price) {
+		super();
+		this.id = id;
+		this.item_id = item_id;
+		this.price = price;
+	}
+
 }

@@ -103,8 +103,7 @@ public class Item implements Runnable, ItemRMI {
 
 	@Override
 	public void run() {
-		while (true) {
-
+		while (ret.state != State.Terminated) {
 		}
 	}
 
@@ -124,4 +123,9 @@ public class Item implements Runnable, ItemRMI {
 		return ret;
 	}
 
+	public void Kill(){
+		this.mutex.lock();
+		this.ret.state = State.Terminated;
+		this.mutex.unlock();
+	}
 }

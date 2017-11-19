@@ -1,10 +1,9 @@
 package centralized;
 
-import java.util.Random;
-
+import centralized.Person.retStatus;
 import org.junit.Test;
 
-import centralized.Person.retStatus;
+import java.util.Random;
 
 /**
  * This is a subset of entire test cases For your reference only.
@@ -61,11 +60,11 @@ public class AuctionTest {
 		int n_set = N1;
 		int[] l_set = new int[N1];
 		double[][] weight = {
-				{1, 1, 1, 1, 1},
-				{1, 1, 1, 1, 1},
-				{1, 1, 1, 1, 1},
-				{1, 1, 1, 1, 1},
-				{1, 1, 1, 1, 1}
+				{10, 1, 1, 1, 1},
+				{10, 1, 1, 7, 1},
+				{10, 1, 5, 1, 1},
+				{10, 1, 5, 1, 1},
+				{10, 1, 1, 1, 1}
 		};
 //		for (int i = 0; i < N1; i++) {
 //			for (int j = 0; j < N2; j++) {
