@@ -8,30 +8,6 @@ public class Main {
     static int N1;
     static int N2;
 
-    private static Person.retStatus isDecided(Person[] pxa, int personIndex) {
-        return pxa[personIndex].Status();
-    }
-
-    private static Person.retStatus waitForDecide(Person[] pxa, int personIndex) throws Exception {
-        int to = 10;
-        for (int i = 0; i < 30; i++) {
-            Person.retStatus ret = isDecided(pxa, personIndex);
-            if (ret.state != State.Pending) {
-                return ret;
-            }
-            try {
-                Thread.sleep(to);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (to < 1000) {
-                to = to * 2;
-            }
-        }
-
-        throw new Exception("time out error!");
-
-    }
 
     private static void init(int nPersons, int nItems, double eps, double[][] weight, double[] price) {
         String host = "127.0.0.1";
@@ -59,61 +35,12 @@ public class Main {
         }
 
     }
-//	private Person[] initPerson(int nperson, double eps, double[][] weight) {
-//		String host = "127.0.0.1";
-//		String[] peers = new String[nperson];
-//		int[] ports = new int[nperson];
-//		Person[] pxa = new Person[nperson];
-//		for (int i = 0; i < nperson; i++) {
-//			ports[i] = 1100 + i;
-//			peers[i] = host;
-//		}
-//		for (int i = 0; i < nperson; i++) {
-//			pxa[i] = new Person(i, peers, ports, nperson, eps, weight[i]);
-//		}
-//		return pxa;
-//	}
-//
-//	private Item[] initItem(int nItems) {
-//		String host = "127.0.0.1";
-//		String[] peers = new String[nItems];
-//		int[] ports = new int[nItems];
-//		Item[] pxa = new Item[nItems];
-//		for (int i = 0; i < nItems; i++) {
-//			ports[i] = 1200 + i;
-//			peers[i] = host;
-//		}
-//		for (int i = 0; i < nItems; i++) {
-//			pxa[i] = new Item(i, peers, ports);
-//		}
-//		return pxa;
-//	}
-
-    private static boolean isTerminated() {
-        for (int i = 0; i < N1; i++) {
-            if (persons[i].Status().state == State.Pending) {
-                return false;
-            }
-        }
-        int numPending = 0;
-        for (int i = 0; i < N2; i++) {
-            if (items[i].Status().state == State.Pending) {
-                numPending++;
-            }
-        }
-        if (Math.min(N1, N2) + numPending != N2) {
-            return false;
-        }
-        return true;
-    }
 
     public static void main(String args[]) {
         Random rand = new Random();
         N1 = 4;
         N2 = 4;
         final double eps = 1.0 / (2 * N1);
-//		final double eps = 0.0;
-        int n_set = N1;
         int[] l_set = new int[N1];
         double[][] weight = {
                 {10, 1, 1, 1, 1},
@@ -148,22 +75,6 @@ public class Main {
         for (int i = 0; i < N1; i++) {
             persons[i].Start();
         }
-//        while (true) {
-//            if (isTerminated()) {
-//                System.out.println("\n\nTerminated");
-//                for (int i = 0; i < N2; i++) {
-//                    Item.retStatus ret = items[i].Status();
-//                    System.out.println(ret.personIdx + ": " + ret.price);
-//                }
-//                killAll();
-//                break;
-//            }
-//            try {
-//                Thread.sleep(30);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
 
