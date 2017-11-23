@@ -38,17 +38,18 @@ public class Main {
 
     public static void main(String args[]) {
         Random rand = new Random();
-        N1 = 4;
-        N2 = 4;
+        N1 = 10;
+        N2 = 10;
         final double eps = 1.0 / (2 * N1);
         int[] l_set = new int[N1];
-        double[][] weight = {
-                {10, 1, 1, 1, 1},
-                {10, 1, 1, 7, 1},
-                {10, 1, 5, 1, 1},
-                {10, 5, 1, 1, 1},
-                {10, 5, 1, 1, 1}
-        };
+        double[][] weight = new double[N1][N2];
+//        double[][] weight = {
+//                {10, 1, 1, 1, 1},
+//                {10, 1, 1, 7, 1},
+//                {10, 1, 5, 1, 1},
+//                {10, 5, 1, 1, 1},
+//                {10, 5, 1, 1, 1}
+//        };
 		for (int i = 0; i < N1; i++) {
 			for (int j = 0; j < N2; j++) {
 				weight[i][j] = rand.nextDouble() * 5.0;

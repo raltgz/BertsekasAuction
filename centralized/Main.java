@@ -1,19 +1,34 @@
 package centralized;
 
+import java.util.Random;
+
 import centralized.Person.retStatus;
 
 public class Main {
 
 	public static void main(String[] args) {
-
-		final int N1 = 5;
-		final int N2 = 5;
+		
+		long startTime = System.currentTimeMillis();
+		Random rand = new Random();
+		final int N1 = 50;
+		final int N2 = 50;
 		final double eps = 1.0 / (2 * N1);
 		// final double eps = 0.0;
 		int n_set = N1;
 		int[] l_set = new int[N1];
-		double[][] weight = { { 10, 1, 1, 1, 1 }, { 10, 1, 1, 7, 1 }, { 10, 1, 5, 1, 1 }, { 10, 1, 5, 1, 1 },
-				{ 10, 1, 1, 1, 1 } };
+        double[][] weight = new double[N1][N2];
+//      double[][] weight = {
+//              {10, 1, 1, 1, 1},
+//              {10, 1, 1, 7, 1},
+//              {10, 1, 5, 1, 1},
+//              {10, 5, 1, 1, 1},
+//              {10, 5, 1, 1, 1}
+//      };
+		for (int i = 0; i < N1; i++) {
+			for (int j = 0; j < N2; j++) {
+				weight[i][j] = rand.nextDouble() * 5.0;
+			}
+		}
 		Person[] ps = initPerson(N1, eps, weight);
 		double[] price = new double[N2];
 		int[] parent = new int[N2];
@@ -51,7 +66,7 @@ public class Main {
 			System.out.println(i + ": " + parent[i]);
 			System.out.println(i + ": " + price[i]);
 		}
-
+		System.out.println("Time elapsed: " + (System.currentTimeMillis() - startTime));
 	}
 
 	private static retStatus isDecided(Person[] pxa, int personIndex) {
