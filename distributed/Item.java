@@ -94,13 +94,13 @@ public class Item implements Runnable, ItemRMI {
 			this.ret.personIdx = req.id;
 			this.ret.state = State.Decided;
 			this.mutex.unlock();
-			System.out
-			.println("Object " + this.me + " accepting bid from person " + req.id + " with price " + req.price);
+			System.out.println("Object " + this.me + " accepting bid from person " + req.id + " with price "
+					+ ((double) Math.round(req.price * 100)));
 			return new Response(true);
 		} else {
 			this.mutex.unlock();
-			System.out
-					.println("Object " + this.me + " rejecting bid from person " + req.id + " with price " + req.price);
+			System.out.println("Object " + this.me + " rejecting bid from person " + req.id + " with price "
+					+ ((double) Math.round(req.price * 100)));
 			return new Response(false);
 		}
 	}

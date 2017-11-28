@@ -75,6 +75,7 @@ public class Main {
 				parent[ret.objectIdx] = currPerson;
 				price[ret.objectIdx] = ret.price;
 			}
+			System.out.println("****************");
 //			if (eps * 2 / 3.0 >= 1.0 / (2 * N1)) {
 //				eps = eps * 2 / 3.0;
 //			}

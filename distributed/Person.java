@@ -157,18 +157,18 @@ public class Person implements Runnable, PersonRMI {
 				}
 			}
 			double price = prices[maxIndex] + max - max2 + eps;
-			System.out.println("person " + this.me + " bidding for object " + maxIndex);
+			System.out.println("person " + this.me + " bidding for object " + maxIndex + " with price " + ((double)Math.round(price * 100)) / 100);
 			Response rsp = Call("Bid", new Request(this.me, price), maxIndex);
 			if (rsp.isAccept) {
 				ret.state = State.Decided;
 				ret.price = price;
 				this.assignedId = maxIndex;
 				System.out.println("received accept at person: " + this.me + ", object: " + this.assignedId
-						+ ", price: " + price);
+						+ ", price: " + ((double)Math.round(price * 100)) / 100);
 				Call("Report", new Request(this.me, maxIndex, price), controller_id);
 			} else {
-				System.out.println("received reject at person: " + this.me + ", object: " + this.assignedId
-						+ ", price: " + price);
+				System.out.println("received reject at person: " + this.me + ", object: " + maxIndex
+						+ ", price: " + ((double)Math.round(price * 100)) / 100);
 			}
 
 			// ret.price = prices[maxIndex] + max - max2 + eps;
