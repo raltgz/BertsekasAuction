@@ -22,7 +22,9 @@ public class Controller implements Runnable, ControllerRMI{
     private boolean notTerminated;
     HashSet<Integer> person_set;
     HashSet<Integer> item_set;
+    private long start;
     public Controller(int N1, int N2, Item[] items, Person[] persons) {
+    	start = System.currentTimeMillis();
         this.N1 = N1;
         this.N2 = N2;
         this.notTerminated = true;
@@ -61,11 +63,14 @@ public class Controller implements Runnable, ControllerRMI{
             item_set.add(Integer.valueOf(req.item_id));
         }
         if(item_set.size() == Math.min(N1,N2) && person_set.size() == N1) {
+        	System.out.println("******");
+        	System.out.println("final assignments");
             for(int i=0;i<N1; i++) {
-                System.out.println("For person" + i + ":" + assignments[i]);
-                System.out.println(prices[i]);
+                System.out.println("person " + i + " is assigned to object " + assignments[i] + " with price " + prices[i]);
             }
+//        	System.out.println("Time: " + (System.currentTimeMillis() - start));
             killAll();
+            
         }
         this.mutex.unlock();
         notTerminated = false;

@@ -17,7 +17,7 @@ public class Person implements Runnable, PersonRMI {
 	int[] personPorts; // host port
 	int me; // index into peers[]
 	int assignedId; // object assigned to the person
-    int controller_id;
+	int controller_id;
 
 	Registry registry;
 	private int N2;
@@ -78,19 +78,17 @@ public class Person implements Runnable, PersonRMI {
 		Response callReply = null;
 		try {
 
-
-
 			if (rmi.equals("Bid")) {
-                Registry registry = LocateRegistry.getRegistry(this.itemPorts[id]);
+				Registry registry = LocateRegistry.getRegistry(this.itemPorts[id]);
 				ItemRMI stub = (ItemRMI) registry.lookup("Item");
 				callReply = stub.Bid(req);
 			} else if (rmi.equals("Report")) {
-                Registry registry = LocateRegistry.getRegistry(controller_id);
+				Registry registry = LocateRegistry.getRegistry(controller_id);
 				ControllerRMI stub = (ControllerRMI) registry.lookup("Controller");
 				callReply = stub.Report(req);
 			} else {
-                System.out.println("Wrong parameters!");
-            }
+				System.out.println("Wrong parameters!");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -137,6 +135,9 @@ public class Person implements Runnable, PersonRMI {
 	}
 
 	void bid() {
+		if (eps * 2.0 / 3 >= 1.0 / (2 * N2)) {
+			eps = eps * 2.0 / 3;
+		}
 		double max = 0.0;
 		int maxIndex = -1;
 		for (int i = 0; i < N2; i++) {
@@ -147,7 +148,7 @@ public class Person implements Runnable, PersonRMI {
 		}
 		if (max == 0.0) {
 			ret.state = State.Terminated;
-            Call("Report", new Request(this.me, -1, -1), controller_id);
+			Call("Report", new Request(this.me, -1, -1), controller_id);
 		} else {
 			double max2 = 0.0;
 			for (int i = 0; i < N2; i++) {
@@ -156,15 +157,20 @@ public class Person implements Runnable, PersonRMI {
 				}
 			}
 			double price = prices[maxIndex] + max - max2 + eps;
+			System.out.println("person " + this.me + " bidding for object " + maxIndex);
 			Response rsp = Call("Bid", new Request(this.me, price), maxIndex);
 			if (rsp.isAccept) {
 				ret.state = State.Decided;
 				ret.price = price;
 				this.assignedId = maxIndex;
-				System.out.println("person id:" + this.me + ", object id: " + this.assignedId + ", price: " + price);
+				System.out.println("received accept at person: " + this.me + ", object: " + this.assignedId
+						+ ", price: " + price);
 				Call("Report", new Request(this.me, maxIndex, price), controller_id);
-			} 
-			
+			} else {
+				System.out.println("received reject at person: " + this.me + ", object: " + this.assignedId
+						+ ", price: " + price);
+			}
+
 			// ret.price = prices[maxIndex] + max - max2 + eps;
 			// ret.objectIdx = maxIndex;
 			// ret.state = State.Decided;
@@ -199,19 +205,19 @@ public class Person implements Runnable, PersonRMI {
 	public void Update(Request req) {
 		prices[req.id] = req.price;
 		this.mutex.lock();
-		if(this.assignedId == req.id){
+		if (this.assignedId == req.id) {
 			ret.state = State.Pending;
 			this.assignedId = -1;
 		}
 		this.mutex.unlock();
 	}
 
-	public void Kill(){
+	public void Kill() {
 		this.ret.state = State.Terminated;
-		if(this.registry != null){
+		if (this.registry != null) {
 			try {
 				UnicastRemoteObject.unexportObject(this.registry, true);
-			} catch(Exception e){
+			} catch (Exception e) {
 				System.out.println("None reference");
 			}
 		}
