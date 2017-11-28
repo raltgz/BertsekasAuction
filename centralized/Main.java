@@ -15,24 +15,24 @@ public class Main {
 		// final double eps = 0.0;
 		int n_set = N1;
 		int[] l_set = new int[N1];
-		double[][] weight = new double[N1][N2];
-		// double[][] weight = {
-		// {10, 1, 1, 1, 1},
-		// {10, 1, 1, 7, 1},
-		// {10, 1, 5, 1, 1},
-		// {10, 5, 1, 1, 1},
-		// {10, 5, 1, 1, 1}
-		// };
+//		double[][] weight = new double[N1][N2];
+		 double[][] weight = {
+		 {1, 4, 3, 2, 1},
+		 {2, 1, 1, 7, 1},
+		 {4, 1, 5, 1, 1},
+		 {7, 5, 1, 1, 1},
+		 {5, 5, 1, 1, 1}
+		 };
 		double m = 0.0;
-		for (int i = 0; i < N1; i++) {
-			for (int j = 0; j < N2; j++) {
-				weight[i][j] = rand.nextDouble() * 5.0;
-				if (weight[i][j] > m) {
-					m = weight[i][j];
-				}
-
-			}
-		}
+//		for (int i = 0; i < N1; i++) {
+//			for (int j = 0; j < N2; j++) {
+//				weight[i][j] = rand.nextDouble() * 5.0;
+//				if (weight[i][j] > m) {
+//					m = weight[i][j];
+//				}
+//
+//			}
+//		}
 //		eps = m / 4;
 //		if (eps < 1.0 / (2 * N1)) {
 //			eps = 1.0 / (2 * N1);
